@@ -1,0 +1,72 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>Django Todo App</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-9ndCyUaIbzAi2FUVXJi0CjmCapSmO7SnpJef0486qhLnuZ2cdeRhO02iuK6FUUVM" crossorigin="anonymous" />
+  </head>
+  <body>
+    <h1>Hello, world! to the django todo app</h1>
+    <form method="GET" action="{% url 'todo_list_view' %}" >
+        <input type="text" class="form-control" id="search" placeholder="Search your todos here" name="search" />
+        <button type="submit" class="btn btn-secondary">Search</button>
+    </form>
+    <h2>Filter todos</h2>
+    <a class="btn btn-danger" href="/todos/list?status=incomplete">Show Incompleted todos</a>
+    <a class="btn btn-success" href="/todos/list?status=complete">Show completed todos</a>
+    <a class="btn btn-secondary" href="/todos/list?order_by_oldest=true">Order by oldest</a>
+    <a class="btn btn-secondary" href="/todos/list?order_by_latest=true">Order by latest</a>
+    <form method="POST" action="{% url 'todo_create_view' %}">
+      {% csrf_token %}
+      <div class="mb-3">
+        <label for="todoTitle" class="form-label">Todo title</label>
+        <input type="text" class="form-control" id="todoTitle" placeholder="Start adding your todos here ..." name="todoTitle" />
+      </div>
+      <div class="form-floating">
+        <textarea class="form-control" id="todoDescription" style="height: 100px" name="todoDescription"></textarea>
+        <label for="todoDescription">Todo Description</label>
+      </div>
+      <button type="submit" class="btn btn-primary">Add my todo</button>
+    </form>
+    <ul>
+    <table class="table">
+      <thead>
+        <tr>
+          <th scope="col">#</th>
+          <th scope="col">Todo Title</th>
+          <th scope="col">Todo Created at</th>
+          <th scope="col">Todo Actions</th>
+        </tr>
+      </thead>
+      <tbody>
+    {% for todo in todo_list %}
+        <tr class="{% if todo.completed == True  %}
+        table-success
+        {% else %}
+        table-danger
+        {% endif %}">
+          <th scope="row">{{todo.id}}</th>
+          <td>{{todo.title}}</td>
+          <td>{{todo.created_at}}</td>
+          <td>
+            <form method="POST" action="{% url 'todo_delete_view' todo.id %}" >
+              {% csrf_token %}
+              <button type="submit" class="btn btn-danger">Delete</button>
+            </form>
+            <br>
+            {% if todo.completed == False %}
+              <form method="POST" action="{% url 'todo_update_view' todo.id %}">
+                {% csrf_token %}
+                <button type="submit" class="btn btn-success">Mark as complete !</button>
+              </form>
+            {% endif %}
+          </td>
+        </tr>
+    {% endfor %}
+      </tbody>
+    </table>
+    </ul>
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js" integrity="sha384-geWF76RCwLtnZ8qwWowPQNguL3RmwHVBC9FhGdlKrxdiJJigb/j/68SIy3Te4Bkz" crossorigin="anonymous"></script>
+  </body>
+</html>

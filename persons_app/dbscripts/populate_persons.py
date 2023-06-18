@@ -1,11 +1,11 @@
 '''
 python manage.py shell
 execute the below command inside the shell
-exec(open('./personapp/dbscripts/populate_persons.py').read())
+exec(open('./persons_app/dbscripts/populate_persons.py').read())
 '''
 
 from faker import Faker
-from personapp.models import PersonModel
+from persons_app.models import Person
 MAX_LIMIT = 1000
 AGES = [i for i in range(1, 99)]
 fake = Faker()
@@ -25,7 +25,7 @@ class PopulatePerson:
             print("i", i)
             print("name", name)
             print("age", age)
-            person_obj = PersonModel.objects.create(
+            person_obj = Person.objects.create(
                 name=name,
                 age=age
             )
